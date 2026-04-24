@@ -12,6 +12,7 @@ import Chat from "./pages/Chat";
 import LocationShare from "./pages/LocationShare";
 import Housing from "./pages/Housing";
 import Pet from "./pages/Pet";
+import HomePet from "./pages/HomePet";
 import Album from "./pages/Album";
 import Anniversary from "./pages/Anniversary";
 import Profile from "./pages/Profile";
@@ -83,6 +84,7 @@ function AppLayout() {
           <Route path="/" component={Home} />
           <Route path="/chat" component={Chat} />
           <Route path="/location" component={LocationShare} />
+          <Route path="/home-pet" component={HomePet} />
           <Route path="/housing" component={Housing} />
           <Route path="/pet" component={Pet} />
           <Route path="/album" component={Album} />

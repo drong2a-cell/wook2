@@ -72,9 +72,11 @@ export default function Profile() {
 
         {/* Avatar */}
         <div className="absolute bottom-4 left-6 flex items-end gap-3">
-          <div className="w-16 h-16 rounded-2xl bg-card border-2 border-white/50 flex items-center justify-center text-2xl shadow-lg">
-            {user?.name?.charAt(0) ?? "👤"}
-          </div>
+          <img
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/profile-default-icon-4aHNAz9NoSwscmecPbEHhY.webp"
+            alt="프로필"
+            className="w-16 h-16 rounded-2xl shadow-lg object-cover"
+          />
           <div className="pb-1">
             <p className="text-white font-bold text-lg leading-tight">{profile?.name ?? user?.name}</p>
             <p className="text-white/70 text-xs">{user?.email}</p>

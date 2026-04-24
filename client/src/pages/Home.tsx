@@ -57,14 +57,18 @@ export default function Home() {
       {/* Main D-Day Card */}
       <div className="px-6 mb-6">
         {mainDday ? (
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/80 to-primary p-6 text-white shadow-lg">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-400 to-purple-400 p-6 text-white shadow-lg">
             {/* Decorative circles */}
             <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10" />
             <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-full bg-white/10" />
             <div className="relative">
-              <div className="flex items-center gap-2 mb-4">
-                <Heart size={16} className="fill-white" />
-                <span className="text-sm font-medium text-white/80">{mainDday.title}</span>
+              <div className="flex items-center gap-3 mb-4">
+                <img
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/dday-icon-98qLWRuZxBUunXJGi2YhQ7.webp"
+                  alt="디데이"
+                  className="w-6 h-6"
+                />
+                <span className="text-sm font-medium text-white/90">{mainDday.title}</span>
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-6xl font-black">D+{getDayCount(new Date(mainDday.date))}</span>
