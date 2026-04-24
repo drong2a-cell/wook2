@@ -94,18 +94,11 @@
 
 
 ## Push Notification Feature
-- [ ] Vite 빌드 오류 해결 (vite-plugin-web-dev-previewer 제거)
-- [ ] 웹 푸시 구독 UI 구현 (Notification 권한 요청)
-- [ ] 푸시 구독 정보 DB 저장 API
-- [ ] 메시지 수신 시 실시간 푸시 알림 전송
-- [ ] 최종 배포
-
-
-## Push Notification Feature
 - [x] Vite 빌드 오류 해결 (vite-plugin-web-dev-previewer 제거)
 - [x] 웹 푸시 구독 UI 구현 (Notification 권한 자동 요청)
 - [x] 푸시 구독 정보 DB 저장 API
 - [x] Service Worker 푸시 알림 매핸들러 구현
+- [x] 메시지 수신 시 실시간 푸시 알림 전송 (서버 로직 추가)
 - [x] 최종 배포
 
 
