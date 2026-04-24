@@ -279,6 +279,18 @@ export async function playWithPet(pairId: number) {
   return getOrCreatePet(pairId);
 }
 
+export async function createPet(pairId: number, name: string, type: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const existing = await db.select().from(couplePets).where(eq(couplePets.pairId, pairId)).limit(1);
+  if (existing[0]) {
+    await db.update(couplePets).set({ name, type: type as any, level: 1, exp: 0, hunger: 50, happiness: 50 }).where(eq(couplePets.pairId, pairId));
+    return db.select().from(couplePets).where(eq(couplePets.pairId, pairId)).limit(1).then(r => r[0]);
+  }
+  await db.insert(couplePets).values({ pairId, name, type: type as any });
+  return db.select().from(couplePets).where(eq(couplePets.pairId, pairId)).limit(1).then(r => r[0]);
+}
+
 export async function updatePetName(pairId: number, name: string, type: string) {
   const db = await getDb();
   if (!db) return;

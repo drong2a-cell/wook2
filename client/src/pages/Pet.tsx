@@ -51,13 +51,13 @@ export default function Pet() {
   const [petTypeCreate, setPetTypeCreate] = useState("cat");
 
   const { data: pet, refetch } = trpc.pet.get.useQuery();
-  const createPet = trpc.pet.updateName.useMutation({
+  const createPet = trpc.pet.create.useMutation({
     onSuccess: () => { refetch(); setCreateOpen(false); setPetName(""); setPetTypeCreate("cat"); toast.success("펫이 생성되었어요! 🎉"); },
     onError: (e: any) => toast.error(e.message),
   });
   const feed = trpc.pet.feed.useMutation({ onSuccess: () => { refetch(); toast.success("냠냠! 배가 불러졌어요 🍖"); } });
   const play = trpc.pet.play.useMutation({ onSuccess: () => { refetch(); toast.success("신나게 놀았어요! 🎉"); } });
-  const updateName = trpc.pet.updateName.useMutation({
+  const updateName = trpc.pet.create.useMutation({
     onSuccess: () => { refetch(); setSettingsOpen(false); toast.success("설정이 저장되었습니다!"); },
   });
 

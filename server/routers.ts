@@ -175,6 +175,13 @@ const petRouter = router({
     return db.getOrCreatePet(pair.id);
   }),
 
+  create: protectedProcedure
+    .input(z.object({ name: z.string().min(1), type: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const pair = await requirePair(ctx.user.id);
+      return db.createPet(pair.id, input.name, input.type);
+    }),
+
   feed: protectedProcedure.mutation(async ({ ctx }) => {
     const pair = await requirePair(ctx.user.id);
     return db.feedPet(pair.id);
