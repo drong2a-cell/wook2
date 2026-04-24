@@ -10,6 +10,7 @@ export default function Pairing() {
   const { user, logout } = useAuth();
   const [code, setCode] = useState("");
   const [tab, setTab] = useState<"create" | "join">("create");
+  const { data: imageData } = trpc.system.getImageUrl.useQuery({ key: "couple-icon_19778bab.png" });
 
   const createCode = trpc.pairing.createInviteCode.useMutation({
     onError: (e) => toast.error(e.message),
@@ -35,11 +36,13 @@ export default function Pairing() {
       <div className="relative mb-8 h-32 w-full flex items-center justify-center">
         <div className="absolute w-40 h-40 rounded-full bg-pink-200/40 blur-3xl -top-4 -left-8 animate-pulse" />
         <div className="absolute w-32 h-32 rounded-full bg-purple-200/30 blur-3xl -bottom-4 -right-8 animate-pulse" />
-        <img
-          src="/manus-storage/couple-icon_19778bab.png"
-          alt="커플 연결"
-          className="relative w-40 h-40 object-contain drop-shadow-lg"
-        />
+        {imageData?.url && (
+          <img
+            src={imageData.url}
+            alt="커플 연결"
+            className="relative w-40 h-40 object-contain drop-shadow-lg"
+          />
+        )}
       </div>
 
       <div className="w-full max-w-sm space-y-6">
