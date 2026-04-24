@@ -28,7 +28,8 @@ jobs:
     
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-        - name: Build web assets
+    
+    - name: Build web assets
       run: pnpm build
     
     - name: Move web assets to correct location
@@ -37,10 +38,6 @@ jobs:
           mv dist/public/* dist/ || true
           rmdir dist/public || true
         fi
-    
-    - name: Sync Capacitor
-      run: pnpm exec cap sync android
-
     
     - name: Sync Capacitor
       run: pnpm exec cap sync android
@@ -61,4 +58,3 @@ jobs:
         name: app-debug-apk
         path: android/app/build/outputs/apk/debug/app-debug.apk
         retention-days: 7
-
