@@ -8,8 +8,6 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { startAnniversaryScheduler } from "../anniversary-scheduler";
-import { setupWebSocket } from "./websocket";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -33,9 +31,6 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  
-  // Initialize WebSocket
-  setupWebSocket(server);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -65,10 +60,7 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
-    console.log(`[WebSocket] Server ready for real-time chat`);
   });
 }
 
-startServer().then(() => {
-  startAnniversaryScheduler();
-}).catch(console.error);
+startServer().catch(console.error);
