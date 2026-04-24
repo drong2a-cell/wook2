@@ -2,10 +2,9 @@ import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
-import { webDevPreviewerPlugin } from "vite-plugin-web-dev-previewer";
 
 export default defineConfig({
-  plugins: [react(), jsxLocPlugin(), webDevPreviewerPlugin()],
+  plugins: [react(), jsxLocPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -23,6 +22,12 @@ export default defineConfig({
     fs: {
       strict: true,
       deny: ["**/.*"],
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
     },
   },
 });

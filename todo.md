@@ -91,3 +91,19 @@
 - [x] 앨범 페이지에 공유 갤러리 탭 추가 (메뉴 추가 없음)
 - [x] 아이폰 성능 최적화 (Vite 번들 최적화, 이미지 lazy loading, Intersection Observer)
 - [x] 최종 배포
+
+
+## Push Notification Feature
+- [ ] Vite 빌드 오류 해결 (vite-plugin-web-dev-previewer 제거)
+- [ ] 웹 푸시 구독 UI 구현 (Notification 권한 요청)
+- [ ] 푸시 구독 정보 DB 저장 API
+- [ ] 메시지 수신 시 실시간 푸시 알림 전송
+- [ ] 최종 배포
+
+
+## Push Notification Feature
+- [x] Vite 빌드 오류 해결 (vite-plugin-web-dev-previewer 제거)
+- [x] 웹 푸시 구독 UI 구현 (Notification 권한 자동 요청)
+- [x] 푸시 구독 정보 DB 저장 API
+- [x] Service Worker 푸시 알림 매핸들러 구현
+- [x] 최종 배포

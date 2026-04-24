@@ -9,6 +9,9 @@ import { invokeLLM } from "./_core/llm";
 import { notifyOwner } from "./_core/notification";
 import { storagePut } from "./storage";
 import * as db from "./db";
+import { eq } from "drizzle-orm";
+import { pushSubscriptions } from "../drizzle/schema";
+import { getDb } from "./db";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -321,6 +324,57 @@ const profileRouter = router({
   }),
 });
 
+const notificationRouter = router({
+  savePushSubscription: protectedProcedure
+    .input(z.object({
+      subscription: z.object({
+        endpoint: z.string(),
+        keys: z.object({
+          p256dh: z.string(),
+          auth: z.string(),
+        }),
+      }),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const database = await getDb();
+      if (!database) throw new Error('Database not available');
+
+      try {
+        await database.insert(pushSubscriptions).values({
+          userId: ctx.user.id,
+          endpoint: input.subscription.endpoint,
+          p256dh: input.subscription.keys.p256dh,
+          auth: input.subscription.keys.auth,
+          createdAt: new Date(),
+        }).onDuplicateKeyUpdate({
+          set: {
+            p256dh: input.subscription.keys.p256dh,
+            auth: input.subscription.keys.auth,
+          },
+        });
+
+        return { success: true };
+      } catch (error) {
+        console.error('Failed to save push subscription:', error);
+        throw error;
+      }
+    }),
+
+  getPushSubscription: protectedProcedure
+    .query(async ({ ctx }) => {
+      const database = await getDb();
+      if (!database) throw new Error('Database not available');
+
+      const result = await database
+        .select()
+        .from(pushSubscriptions)
+        .where(eq(pushSubscriptions.userId, ctx.user.id))
+        .limit(1);
+
+      return result[0] || null;
+    }),
+});
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -340,6 +394,7 @@ export const appRouter = router({
   album: albumRouter,
   anniversary: anniversaryRouter,
   profile: profileRouter,
+  notification: notificationRouter,
 });
 
 export type AppRouter = typeof appRouter;
