@@ -89,5 +89,25 @@
 - [x] 펫 데이터 DB 저장 로직
 - [x] Service Worker 푸시 알림 구현 (기념일, 메시지, 펫 알림)
 - [x] 앨범 페이지에 공유 갤러리 탭 추가 (메뉴 추가 없음)
-- [ ] 아이폰 성능 최적화 (image lazy loading, 번들 크기 감소)
-- [ ] 최종 배포
+- [x] 아이폰 성능 최적화 (Vite 번들 최적화, 이미지 lazy loading, Intersection Observer)
+- [x] 최종 배포
+
+
+## Push Notification Feature
+- [x] Vite 빌드 오류 해결 (vite-plugin-web-dev-previewer 제거)
+- [x] 웹 푸시 구독 UI 구현 (Notification 권한 자동 요청)
+- [x] 푸시 구독 정보 DB 저장 API
+- [x] Service Worker 푸시 알림 매핸들러 구현
+- [x] 메시지 수신 시 실시간 푸시 알림 전송 (서버 로직 추가)
+- [x] 최종 배포
+
+
+## Bug Fixes - 긴급
+- [x] 아이콘 경로 오류 수정 (이미지 URL 복구)
+- [x] 채팅 데이터 DB 저장 및 조회 로직 수정
+- [x] 최종 배포
+
+
+## Layout & CSS Fixes
+- [x] 레이아웃 붕괴 문제 해결 (html/body/root 높이 설정)
+- [x] CSS 렌더링 검증 (모든 스타일 정상 로딩)

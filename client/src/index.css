@@ -117,6 +117,16 @@
 }
 
 @layer base {
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    min-height: 100vh;
+    min-width: 100vw;
+  }
+  #root {
+    display: flex;
+    flex-direction: column;
+  }
   * {
     @apply border-border outline-ring/50;
   }
@@ -184,5 +194,20 @@
       padding-right: 2rem;
       max-width: 1280px; /* Standard content width */
     }
+  }
+}
+
+@layer utilities {
+  .h-screen {
+    height: 100vh;
+  }
+  .min-h-screen {
+    min-height: 100vh;
+  }
+  .w-screen {
+    width: 100vw;
+  }
+  .min-w-screen {
+    min-width: 100vw;
   }
 }

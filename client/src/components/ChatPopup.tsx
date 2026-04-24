@@ -6,12 +6,12 @@ import { io, Socket } from "socket.io-client";
 import { toast } from "sonner";
 
 interface Message {
-  id: number;
+  id: number; // 양수: 실제 DB ID, 음수: 임시 optimistic ID
   senderId: number;
   content: string;
   imageUrl?: string;
   createdAt: Date;
-  readAt?: Date;
+  readAt?: Date | null;
 }
 
 export default function ChatPopup() {
@@ -27,14 +27,17 @@ export default function ChatPopup() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: pairData } = trpc.pairing.getMyPair.useQuery();
-  const { data: chatMessages, refetch: refetchMessages } = trpc.chat.getMessages.useQuery(
+  const { data: chatMessages, refetch: refetchMessages, isLoading: isLoadingMessages } = trpc.chat.getMessages.useQuery(
     { limit: 50 },
     { enabled: isOpen && !!pairData }
   );
 
-  // Initialize WebSocket
+  // Initialize WebSocket and refetch messages on open
   useEffect(() => {
     if (!isOpen || !user || !pairData) return;
+    
+    // 채팅 창 열 때 최신 메시지 조회
+    refetchMessages();
 
     socketRef.current = io(window.location.origin, {
       reconnection: true,
@@ -45,10 +48,27 @@ export default function ChatPopup() {
 
     socketRef.current.on("connect", () => {
       socketRef.current?.emit("auth", user.id, pairData.pair.id);
+      // 연결 후 최신 메시지 다시 조회
+      refetchMessages();
     });
 
     socketRef.current.on("message", (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
+      setMessages((prev) => {
+        // 서버에서 온 메시지: 임시 ID 메시지를 실제 ID로 교체하거나 새 메시지 추가
+        if (msg.senderId === user.id && msg.id > 0) {
+          // 내가 보낸 메시지이고 실제 DB ID인 경우, 임시 메시지 찾아서 교체
+          const tempMsgIndex = prev.findIndex(
+            (m) => m.id < 0 && m.senderId === user.id && m.content === msg.content
+          );
+          if (tempMsgIndex >= 0) {
+            const updated = [...prev];
+            updated[tempMsgIndex] = msg;
+            return updated;
+          }
+        }
+        // 새 메시지 추가 (상대방 메시지 또는 이미 있는 메시지)
+        return [...prev, msg];
+      });
       scrollToBottom();
     });
 
@@ -59,15 +79,16 @@ export default function ChatPopup() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [isOpen, user, pairData]);
+  }, [isOpen, user, pairData, refetchMessages]);
 
-  // Load initial messages
+  // Load initial messages when chat opens or messages refresh
   useEffect(() => {
-    if (chatMessages) {
+    if (isOpen && chatMessages && !isLoadingMessages) {
+      // DB에서 로드한 메시지는 모두 실제 ID를 가짐
       setMessages(chatMessages as Message[]);
       scrollToBottom();
     }
-  }, [chatMessages]);
+  }, [chatMessages, isOpen, isLoadingMessages]);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -78,19 +99,22 @@ export default function ChatPopup() {
   const handleSendMessage = () => {
     if (!input.trim() || !socketRef.current || !user || !pairData) return;
 
-    const msg: Message = {
-      id: Date.now(),
+    // 임시 ID로 optimistic 업데이트 (나중에 서버 ID로 교체)
+    const tempId = -Date.now();
+    const optimisticMsg: Message = {
+      id: tempId,
       senderId: user.id,
       content: input,
       createdAt: new Date(),
     };
 
-    socketRef.current.emit("message", {
+    socketRef.current.emit("send-message", {
       pairId: pairData.pair.id,
       content: input,
+      tempId, // 서버가 이 임시 ID를 받아서 실제 DB ID와 매핑
     });
 
-    setMessages((prev) => [...prev, msg]);
+    setMessages((prev) => [...prev, optimisticMsg]);
     setInput("");
     scrollToBottom();
   };

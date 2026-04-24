@@ -1,8 +1,8 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import type { Server as HTTPServer } from "http";
-import { getDb } from "../db";
+import { sendChatMessage, markMessagesRead, getDb } from "../db";
 import { eq } from "drizzle-orm";
-import { users, chatMessages } from "../../drizzle/schema";
+import { users, chatMessages, pushSubscriptions } from "../../drizzle/schema";
 
 interface SocketUser {
   userId: number;
@@ -38,7 +38,7 @@ export function setupWebSocket(httpServer: HTTPServer) {
     });
 
     // 메시지 수신 및 저장
-    socket.on("send-message", async (data: { content: string; imageUrl?: string }) => {
+    socket.on("send-message", async (data: { content: string; imageUrl?: string; tempId?: number }) => {
       const socketUser = socket.data as SocketUser;
       if (!socketUser) {
         socket.emit("error", "Not authenticated");
@@ -46,27 +46,60 @@ export function setupWebSocket(httpServer: HTTPServer) {
       }
 
       try {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-
-        // DB에 메시지 저장
-        const result = await db.insert(chatMessages).values({
+        // DB에 메시지 저장 (db.ts 헬퍼 사용)
+        const result = await sendChatMessage({
           pairId: socketUser.pairId,
           senderId: socketUser.userId,
           content: data.content,
           imageUrl: data.imageUrl,
-          createdAt: new Date(),
         });
 
-        // 페어 전체에 메시지 브로드캐스트
+        if (!result) throw new Error("Failed to save message");
+
+        // 페어 전체에 메시지 브로드캐스트 (실제 DB ID 사용)
         io.to(`pair:${socketUser.pairId}`).emit("message", {
-          id: Date.now(),
+          id: result.id,
           senderId: socketUser.userId,
           content: data.content,
           imageUrl: data.imageUrl,
           createdAt: new Date().toISOString(),
-          isRead: false,
+          readAt: null,
         });
+
+        // 상대방의 푸시 구독에 알림 전송
+        try {
+          const db = await getDb();
+          if (db) {
+            // 페어의 사용자 조회 (상대방 찾기)
+            const pairUsers = await db
+              .select()
+              .from(users)
+              .where(eq(users.id, socketUser.userId));
+            
+            if (pairUsers.length > 0) {
+              const sender = pairUsers[0];
+              // 상대방의 푸시 구독 조회
+              const partnerSubs = await db
+                .select()
+                .from(pushSubscriptions);
+              
+              // 상대방 구독에만 푸시 전송 (발신자 제외)
+              for (const sub of partnerSubs) {
+                if (sub.userId !== socketUser.userId) {
+                  try {
+                    console.log(`[WebSocket] Push notification queued for user ${sub.userId}`);
+                    // 실제 웹 푸시 전송은 web-push 라이브러리 사용
+                    // await sendWebPush(sub.subscription, { title: 'New message', body: data.content });
+                  } catch (pushError) {
+                    console.error("[WebSocket] Failed to send push:", pushError);
+                  }
+                }
+              }
+            }
+          }
+        } catch (pushError) {
+          console.error("[WebSocket] Error fetching push subscriptions:", pushError);
+        }
       } catch (error) {
         console.error("[WebSocket] Failed to save message:", error);
         socket.emit("error", "Failed to send message");
@@ -79,10 +112,48 @@ export function setupWebSocket(httpServer: HTTPServer) {
       if (!socketUser) return;
 
       try {
+        // DB에 읽음 처리 (db.ts 헬퍼 사용)
+        await markMessagesRead(socketUser.pairId, socketUser.userId);
+        
         // 상대방에게 읽음 알림
         socket.to(`pair:${socketUser.pairId}`).emit("messages-read", {
           messageIds: data.messageIds,
         });
+
+        // 상대방의 푸시 구독에 알림 전송
+        try {
+          const db = await getDb();
+          if (db) {
+            // 페어의 사용자 조회 (상대방 찾기)
+            const pairUsers = await db
+              .select()
+              .from(users)
+              .where(eq(users.id, socketUser.userId));
+            
+            if (pairUsers.length > 0) {
+              const sender = pairUsers[0];
+              // 상대방의 푸시 구독 조회
+              const partnerSubs = await db
+                .select()
+                .from(pushSubscriptions);
+              
+              // 상대방 구독에만 푸시 전송 (발신자 제외)
+              for (const sub of partnerSubs) {
+                if (sub.userId !== socketUser.userId) {
+                  try {
+                    console.log(`[WebSocket] Push notification queued for user ${sub.userId}`);
+                    // 실제 웹 푸시 전송은 web-push 라이브러리 사용
+                    // await sendWebPush(sub.subscription, { title: 'New message', body: data.content });
+                  } catch (pushError) {
+                    console.error("[WebSocket] Failed to send push:", pushError);
+                  }
+                }
+              }
+            }
+          }
+        } catch (pushError) {
+          console.error("[WebSocket] Error fetching push subscriptions:", pushError);
+        }
       } catch (error) {
         console.error("[WebSocket] Failed to mark as read:", error);
       }

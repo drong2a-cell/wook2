@@ -18,6 +18,7 @@ import Anniversary from "./pages/Anniversary";
 import Profile from "./pages/Profile";
 import BottomNav from "./components/BottomNav";
 import ChatPopup from "./components/ChatPopup";
+import { PushNotificationPrompt } from "./components/PushNotificationPrompt";
 import { trpc } from "./lib/trpc";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: pairData, isLoading: pairLoading } = trpc.pairing.getMyPair.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+  const { data: imageData } = trpc.system.getImageUrl.useQuery({ key: "couple-icon_19778bab.png" });
 
   if (loading || (isAuthenticated && pairLoading)) {
     return (
@@ -44,11 +46,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
           <div className="relative h-48 flex items-center justify-center">
             <div className="absolute w-40 h-40 rounded-full bg-pink-200/40 blur-3xl -top-4 -left-8 animate-pulse" />
             <div className="absolute w-32 h-32 rounded-full bg-purple-200/30 blur-3xl -bottom-4 -right-8 animate-pulse" />
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/couple-icon-9EVTtve26aaMFpG9ie7ffd.webp"
-              alt="우리만의 공간"
-              className="relative w-40 h-40 object-contain drop-shadow-lg"
-            />
+            {imageData?.url && (
+              <img
+                src={imageData.url}
+                alt="우리만의 공간"
+                className="relative w-40 h-40 object-contain drop-shadow-lg"
+              />
+            )}
           </div>
           <div className="space-y-3">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">우리만의 공간</h1>
@@ -82,6 +86,7 @@ function AppLayout() {
     <AuthGuard>
       <div className="min-h-screen bg-background">
         <ChatPopup />
+        <PushNotificationPrompt />
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/location" component={LocationShare} />

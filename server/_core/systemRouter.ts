@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { notifyOwner } from "./notification";
 import { adminProcedure, publicProcedure, router } from "./trpc";
+import { storageGetSignedUrl } from "../storage";
 
 export const systemRouter = router({
   health: publicProcedure
@@ -25,5 +26,11 @@ export const systemRouter = router({
       return {
         success: delivered,
       } as const;
+    }),
+  getImageUrl: publicProcedure
+    .input(z.object({ key: z.string() }))
+    .query(async ({ input }) => {
+      const url = await storageGetSignedUrl(input.key);
+      return { url };
     }),
 });
