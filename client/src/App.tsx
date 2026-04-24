@@ -28,7 +28,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   });
   // CloudFront URL 직접 사용 - 배포 환경에서도 작동
   const imageData = {
-    url: "https://d36hbw14aib5lz.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/couple-icon_19778bab.png"
+    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/couple-icon-9EVTtve26aaMFpG9ie7ffd.webp"
   };
 
   if (loading || (isAuthenticated && pairLoading)) {
