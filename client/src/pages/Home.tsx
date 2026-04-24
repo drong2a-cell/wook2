@@ -64,7 +64,7 @@ export default function Home() {
             <div className="relative">
               <div className="flex items-center gap-3 mb-4">
                 <img
-                  src="/manus-storage/dday-icon_a273ef11.png"
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/dday-icon-98qLWRuZxBUunXJGi2YhQ7.webp"
                   alt="디데이"
                   className="w-6 h-6"
                 />

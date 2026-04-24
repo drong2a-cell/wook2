@@ -73,7 +73,7 @@ export default function Profile() {
         {/* Avatar */}
         <div className="absolute bottom-4 left-6 flex items-end gap-3">
           <img
-            src="/manus-storage/profile-default-icon_1195aefa.png"
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/profile-default-icon-4aHNAz9NoSwscmecPbEHhY.webp"
             alt="프로필"
             className="w-16 h-16 rounded-2xl shadow-lg object-cover"
           />
@@ -141,7 +141,7 @@ export default function Profile() {
             <h3 className="text-sm font-semibold mb-3">함께하는 사람</h3>
             <div className="flex items-center gap-3">
                 <img
-                src="/manus-storage/heart-icon-improved_599aad24.png"
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/heart-icon-improved-3e6hM5AAxW6tJUWvJAXunG.webp"
                 alt="하트"
                 className="w-10 h-10 rounded-lg object-cover"
               />

@@ -18,7 +18,6 @@ import Anniversary from "./pages/Anniversary";
 import Profile from "./pages/Profile";
 import BottomNav from "./components/BottomNav";
 import ChatPopup from "./components/ChatPopup";
-import { PushNotificationPrompt } from "./components/PushNotificationPrompt";
 import { trpc } from "./lib/trpc";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -26,10 +25,6 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: pairData, isLoading: pairLoading } = trpc.pairing.getMyPair.useQuery(undefined, {
     enabled: isAuthenticated,
   });
-  // CloudFront URL 직접 사용 - 배포 환경에서도 작동
-  const imageData = {
-    url: "https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/couple-icon-9EVTtve26aaMFpG9ie7ffd.webp"
-  };
 
   if (loading || (isAuthenticated && pairLoading)) {
     return (
@@ -50,7 +45,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
             <div className="absolute w-40 h-40 rounded-full bg-pink-200/40 blur-3xl -top-4 -left-8 animate-pulse" />
             <div className="absolute w-32 h-32 rounded-full bg-purple-200/30 blur-3xl -bottom-4 -right-8 animate-pulse" />
             <img
-              src={imageData.url}
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/couple-icon-9EVTtve26aaMFpG9ie7ffd.webp"
               alt="우리만의 공간"
               className="relative w-40 h-40 object-contain drop-shadow-lg"
             />
@@ -87,7 +82,6 @@ function AppLayout() {
     <AuthGuard>
       <div className="min-h-screen bg-background">
         <ChatPopup />
-        <PushNotificationPrompt />
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/location" component={LocationShare} />
