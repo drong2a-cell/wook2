@@ -33,9 +33,13 @@ export default function Pairing() {
     <div className="h-screen bg-background flex flex-col items-center justify-center px-6 overflow-y-auto">
       {/* Decorative */}
       <div className="relative mb-8 h-32 w-full flex items-center justify-center">
-        <div className="absolute w-28 h-28 rounded-full bg-secondary/40 top-0 left-8" />
-        <div className="absolute w-20 h-20 rounded-full bg-accent/30 bottom-0 right-8" />
-        <span className="relative text-5xl animate-float">💑</span>
+        <div className="absolute w-40 h-40 rounded-full bg-pink-200/40 blur-3xl -top-4 -left-8 animate-pulse" />
+        <div className="absolute w-32 h-32 rounded-full bg-purple-200/30 blur-3xl -bottom-4 -right-8 animate-pulse" />
+        <img
+          src="/manus-storage/couple-icon_19778bab.png"
+          alt="커플 연결"
+          className="relative w-40 h-40 object-contain drop-shadow-lg"
+        />
       </div>
 
       <div className="w-full max-w-sm space-y-6">
