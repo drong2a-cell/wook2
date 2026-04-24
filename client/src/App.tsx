@@ -26,6 +26,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: pairData, isLoading: pairLoading } = trpc.pairing.getMyPair.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+  const { data: imageData } = trpc.system.getImageUrl.useQuery({ key: "couple-icon_19778bab.png" });
 
   if (loading || (isAuthenticated && pairLoading)) {
     return (
@@ -45,11 +46,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
           <div className="relative h-48 flex items-center justify-center">
             <div className="absolute w-40 h-40 rounded-full bg-pink-200/40 blur-3xl -top-4 -left-8 animate-pulse" />
             <div className="absolute w-32 h-32 rounded-full bg-purple-200/30 blur-3xl -bottom-4 -right-8 animate-pulse" />
-            <img
-              src="/manus-storage/couple-icon_19778bab.png"
-              alt="우리만의 공간"
-              className="relative w-40 h-40 object-contain drop-shadow-lg"
-            />
+            {imageData?.url && (
+              <img
+                src={imageData.url}
+                alt="우리만의 공간"
+                className="relative w-40 h-40 object-contain drop-shadow-lg"
+              />
+            )}
           </div>
           <div className="space-y-3">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">우리만의 공간</h1>
