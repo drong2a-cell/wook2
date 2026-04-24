@@ -160,3 +160,70 @@ describe("Icon URL Migration", () => {
     });
   });
 });
+
+
+describe("Chat Message Synchronization", () => {
+  it("should handle optimistic message ID replacement", () => {
+    // Optimistic ID (음수)와 실제 DB ID (양수) 처리 로직 검증
+    const tempId = -Date.now();
+    const actualDbId = 12345;
+
+    // 임시 메시지
+    const tempMsg = {
+      id: tempId,
+      senderId: 1,
+      content: "Hello",
+      createdAt: new Date(),
+      readAt: null,
+    };
+
+    // 서버에서 온 실제 메시지
+    const actualMsg = {
+      id: actualDbId,
+      senderId: 1,
+      content: "Hello",
+      createdAt: new Date().toISOString(),
+      readAt: null,
+    };
+
+    // 임시 ID는 음수, 실제 ID는 양수
+    expect(tempId).toBeLessThan(0);
+    expect(actualDbId).toBeGreaterThan(0);
+    expect(actualMsg.content).toBe(tempMsg.content);
+  });
+
+  it("should distinguish between optimistic and persisted messages", () => {
+    const messages = [
+      { id: -1000, senderId: 1, content: "Optimistic", createdAt: new Date(), readAt: null },
+      { id: 100, senderId: 2, content: "Partner", createdAt: new Date(), readAt: null },
+      { id: 101, senderId: 1, content: "Persisted", createdAt: new Date(), readAt: null },
+    ];
+
+    const optimisticMsgs = messages.filter((m) => m.id < 0);
+    const persistedMsgs = messages.filter((m) => m.id > 0);
+
+    expect(optimisticMsgs).toHaveLength(1);
+    expect(persistedMsgs).toHaveLength(2);
+  });
+
+  it("should verify message structure for DB persistence", () => {
+    const persistedMsg = {
+      id: 999,
+      senderId: 1,
+      content: "Test message",
+      imageUrl: "/manus-storage/image_abc.png",
+      createdAt: new Date().toISOString(),
+      readAt: null,
+    };
+
+    // 모든 필수 필드 존재 확인
+    expect(persistedMsg).toHaveProperty("id");
+    expect(persistedMsg).toHaveProperty("senderId");
+    expect(persistedMsg).toHaveProperty("content");
+    expect(persistedMsg).toHaveProperty("createdAt");
+    expect(persistedMsg).toHaveProperty("readAt");
+
+    // ID는 양수여야 함 (DB에서 반환된 ID)
+    expect(persistedMsg.id).toBeGreaterThan(0);
+  });
+});

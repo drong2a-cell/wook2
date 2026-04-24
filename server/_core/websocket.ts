@@ -38,7 +38,7 @@ export function setupWebSocket(httpServer: HTTPServer) {
     });
 
     // 메시지 수신 및 저장
-    socket.on("send-message", async (data: { content: string; imageUrl?: string }) => {
+    socket.on("send-message", async (data: { content: string; imageUrl?: string; tempId?: number }) => {
       const socketUser = socket.data as SocketUser;
       if (!socketUser) {
         socket.emit("error", "Not authenticated");
