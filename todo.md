@@ -89,5 +89,5 @@
 - [x] 펫 데이터 DB 저장 로직
 - [x] Service Worker 푸시 알림 구현 (기념일, 메시지, 펫 알림)
 - [x] 앨범 페이지에 공유 갤러리 탭 추가 (메뉴 추가 없음)
-- [ ] 아이폰 성능 최적화 (image lazy loading, 번들 크기 감소)
-- [ ] 최종 배포
+- [x] 아이폰 성능 최적화 (Vite 번들 최적화, 이미지 lazy loading, Intersection Observer)
+- [x] 최종 배포
