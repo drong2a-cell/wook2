@@ -50,26 +50,30 @@ export function setupWebSocket(httpServer: HTTPServer) {
         if (!db) throw new Error("Database not available");
 
         // DB에 메시지 저장
-        const result = await db.insert(chatMessages).values({
+        const createdAt = new Date();
+        const insertResult = await db.insert(chatMessages).values({
           pairId: socketUser.pairId,
           senderId: socketUser.userId,
           content: data.content,
           imageUrl: data.imageUrl,
-          createdAt: new Date(),
+          createdAt: createdAt,
         });
+
+        // 저장된 메시지 ID 가져오기
+        const messageId = (insertResult as any).insertId || Date.now();
 
         // 페어 전체에 메시지 브로드캐스트
         io.to(`pair:${socketUser.pairId}`).emit("message", {
-          id: Date.now(),
+          id: messageId,
           senderId: socketUser.userId,
           content: data.content,
           imageUrl: data.imageUrl,
-          createdAt: new Date().toISOString(),
+          createdAt: createdAt.toISOString(),
           isRead: false,
         });
       } catch (error) {
         console.error("[WebSocket] Failed to save message:", error);
-        socket.emit("error", "Failed to send message");
+        socket.emit("error", `Failed to send message: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     });
 
