@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">couple-app</string>
+    <string name="title_activity_main">couple-app</string>
+    <string name="package_name">com.coupleapp.ourspace</string>
+    <string name="custom_url_scheme">com.coupleapp.ourspace</string>
+</resources>
