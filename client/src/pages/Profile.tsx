@@ -140,9 +140,11 @@ export default function Profile() {
           <div className="bg-card rounded-2xl p-4 border border-border/50">
             <h3 className="text-sm font-semibold mb-3">함께하는 사람</h3>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-lg">
-                💕
-              </div>
+                <img
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/heart-icon-improved-3e6hM5AAxW6tJUWvJAXunG.webp"
+                alt="하트"
+                className="w-10 h-10 rounded-lg object-cover"
+              />
               <div>
                 <p className="font-medium text-sm">{pairData.partner.name}</p>
                 <p className="text-xs text-muted-foreground">{pairData.partner.email}</p>

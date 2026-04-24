@@ -46,8 +46,15 @@ export default function Pet() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [newName, setNewName] = useState("");
   const [newType, setNewType] = useState("cat");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [petName, setPetName] = useState("");
+  const [petTypeCreate, setPetTypeCreate] = useState("cat");
 
   const { data: pet, refetch } = trpc.pet.get.useQuery();
+  const createPet = trpc.pet.updateName.useMutation({
+    onSuccess: () => { refetch(); setCreateOpen(false); setPetName(""); setPetTypeCreate("cat"); toast.success("펫이 생성되었어요! 🎉"); },
+    onError: (e: any) => toast.error(e.message),
+  });
   const feed = trpc.pet.feed.useMutation({ onSuccess: () => { refetch(); toast.success("냠냠! 배가 불러졌어요 🍖"); } });
   const play = trpc.pet.play.useMutation({ onSuccess: () => { refetch(); toast.success("신나게 놀았어요! 🎉"); } });
   const updateName = trpc.pet.updateName.useMutation({
@@ -56,8 +63,63 @@ export default function Pet() {
 
   if (!pet) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full bg-primary/20 animate-pulse" />
+      <div className="min-h-screen pb-20 bg-background flex items-center justify-center">
+        <div className="w-full max-w-sm mx-auto px-6 text-center space-y-6">
+          <div className="text-6xl">🐾</div>
+          <div>
+            <h2 className="text-2xl font-bold mb-2">우리 펫을 만들어볼까요?</h2>
+            <p className="text-sm text-muted-foreground">함께 키울 소중한 친구를 선택해주세요</p>
+          </div>
+          <Button
+            onClick={() => setCreateOpen(true)}
+            className="w-full rounded-2xl py-6 text-base"
+          >
+            펫 만들기
+          </Button>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogContent className="rounded-3xl max-w-sm mx-auto">
+              <DialogHeader>
+                <DialogTitle>우리 펫 만들기</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-2">
+                <div>
+                  <Label className="text-sm font-medium">펫 이름</Label>
+                  <Input
+                    value={petName}
+                    onChange={(e) => setPetName(e.target.value)}
+                    placeholder="예: 뽀삐, 냥이"
+                    className="mt-1.5 rounded-xl"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">펫 종류</Label>
+                  <div className="grid grid-cols-4 gap-2 mt-1.5">
+                    {PET_TYPES.map((p) => (
+                      <button
+                        key={p.type}
+                        onClick={() => setPetTypeCreate(p.type)}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all ${
+                          petTypeCreate === p.type ? "border-primary bg-primary/5" : "border-border/50"
+                        }`}
+                      >
+                        <span className="text-2xl">{p.emoji}</span>
+                        <span className="text-[10px] text-muted-foreground">{p.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <Button
+                  onClick={() => createPet.mutate({ name: petName, type: petTypeCreate })}
+                  disabled={!petName.trim() || createPet.isPending}
+                  className="w-full rounded-xl"
+                >
+                  {createPet.isPending ? "생성 중..." : "펫 만들기"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     );
   }
