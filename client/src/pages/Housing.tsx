@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -54,13 +54,15 @@ export default function Housing() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // Initialize from server state
-  if (state && !initialized) {
-    setItems((state.items as HousingItem[]) ?? []);
-    setWallColor(state.wallColor ?? "#F5F5F0");
-    setFloorColor(state.floorColor ?? "#E8E4DC");
-    setInitialized(true);
-  }
+  // Initialize from server state using useEffect to avoid render-phase setState
+  useEffect(() => {
+    if (state && !initialized) {
+      setItems((state.items as HousingItem[]) ?? []);
+      setWallColor(state.wallColor ?? "#F5F5F0");
+      setFloorColor(state.floorColor ?? "#E8E4DC");
+      setInitialized(true);
+    }
+  }, [state, initialized]);
 
   const addItem = (catalog: typeof FURNITURE_CATALOG[0]) => {
     const newItem: HousingItem = {
