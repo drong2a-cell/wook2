@@ -28,9 +28,19 @@ jobs:
     
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-    
-    - name: Build web assets
+        - name: Build web assets
       run: pnpm build
+    
+    - name: Move web assets to correct location
+      run: |
+        if [ -d "dist/public" ]; then
+          mv dist/public/* dist/ || true
+          rmdir dist/public || true
+        fi
+    
+    - name: Sync Capacitor
+      run: pnpm exec cap sync android
+
     
     - name: Sync Capacitor
       run: pnpm exec cap sync android
