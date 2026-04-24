@@ -17,6 +17,7 @@ import Album from "./pages/Album";
 import Anniversary from "./pages/Anniversary";
 import Profile from "./pages/Profile";
 import BottomNav from "./components/BottomNav";
+import ChatPopup from "./components/ChatPopup";
 import { trpc } from "./lib/trpc";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -80,9 +81,9 @@ function AppLayout() {
   return (
     <AuthGuard>
       <div className="min-h-screen bg-background">
+        <ChatPopup />
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/chat" component={Chat} />
           <Route path="/location" component={LocationShare} />
           <Route path="/home-pet" component={HomePet} />
           <Route path="/housing" component={Housing} />
