@@ -209,6 +209,7 @@ export default function Chat() {
                     alt="사진"
                     className={`rounded-2xl max-w-full object-cover ${isMine ? "rounded-br-sm" : "rounded-bl-sm"}`}
                     style={{ maxHeight: 240 }}
+                    loading="lazy"
                   />
                 ) : (
                   <div

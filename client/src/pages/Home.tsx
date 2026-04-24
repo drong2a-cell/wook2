@@ -67,6 +67,7 @@ export default function Home() {
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/dday-icon-98qLWRuZxBUunXJGi2YhQ7.webp"
                   alt="디데이"
                   className="w-6 h-6"
+                  loading="lazy"
                 />
                 <span className="text-sm font-medium text-white/90">{mainDday.title}</span>
               </div>

@@ -52,7 +52,7 @@ export default function Profile() {
       {/* Profile Header with Background */}
       <div className="relative h-56 overflow-hidden">
         {bgUrl ? (
-          <img src={bgUrl} alt="배경" className="w-full h-full object-cover" />
+          <img src={bgUrl} alt="배경" className="w-full h-full object-cover" loading="lazy" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/40" />
         )}
@@ -76,6 +76,7 @@ export default function Profile() {
             src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/profile-default-icon-4aHNAz9NoSwscmecPbEHhY.webp"
             alt="프로필"
             className="w-16 h-16 rounded-2xl shadow-lg object-cover"
+            loading="lazy"
           />
           <div className="pb-1">
             <p className="text-white font-bold text-lg leading-tight">{profile?.name ?? user?.name}</p>
@@ -144,6 +145,7 @@ export default function Profile() {
                 src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/heart-icon-improved-3e6hM5AAxW6tJUWvJAXunG.webp"
                 alt="하트"
                 className="w-10 h-10 rounded-lg object-cover"
+                loading="lazy"
               />
               <div>
                 <p className="font-medium text-sm">{pairData.partner.name}</p>

@@ -48,6 +48,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
               src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/couple-icon-9EVTtve26aaMFpG9ie7ffd.webp"
               alt="우리만의 공간"
               className="relative w-40 h-40 object-contain drop-shadow-lg"
+              loading="lazy"
             />
           </div>
           <div className="space-y-3">
