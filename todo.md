@@ -1,0 +1,48 @@
+# Couple App - TODO
+
+## Phase 1: DB Schema & Migration
+- [x] 커플 페어링 테이블 (couple_pairs, invite_codes)
+- [x] 디데이 테이블 (ddays)
+- [x] 채팅 메시지 테이블 (chat_messages)
+- [x] 위치 공유 테이블 (locations)
+- [x] 하우징 아이템 테이블 (housing_items, housing_state)
+- [x] 펫/식물 테이블 (couple_pets)
+- [x] 앨범 테이블 (albums, album_photos)
+- [x] 기념일 알림 테이블 (anniversaries)
+- [x] 프로필 배경화면 컬럼 추가 (users.profileBg)
+- [x] DB 마이그레이션 실행
+
+## Phase 2: Server Routers
+- [x] 커플 페어링 API (초대 코드 생성/수락, 페어 조회)
+- [x] 디데이 API (설정, 조회, 수정)
+- [x] 채팅 API (메시지 전송, 목록 조회, 읽음 처리, 이미지 첨부)
+- [x] 위치 공유 API (위치 업데이트, 상대방 위치 조회)
+- [x] 하우징 API (아이템 배치, 상태 저장/조회)
+- [x] 펫 API (상태 조회, 먹이주기, 성장 처리)
+- [x] 앨범 API (사진 업로드, AI 캡션 생성, 앨범 조회)
+- [x] 기념일 알림 API (등록, 조회, 자동 알림 스케줄)
+- [x] 프로필 API (배경화면 업로드/조회)
+
+## Phase 3: Frontend UI
+- [ ] 글로벌 스타일 (스칸디나비안 디자인 시스템, CSS 변수)
+- [ ] 앱 레이아웃 및 하단 네비게이션 바
+- [ ] 로그인 페이지 (Google OAuth)
+- [ ] 페어링 페이지 (초대 코드 생성/입력)
+- [ ] 홈 화면 (디데이 카운터, 커플 정보)
+- [ ] 채팅 페이지 (실시간 1:1 채팅, 이미지 첨부)
+- [ ] 위치 공유 페이지 (Google Maps 연동)
+- [ ] 하우징 페이지 (드래그앤드롭 가구 배치)
+- [ ] 펫 페이지 (펫 상태, 먹이주기, 성장 단계)
+- [ ] 앨범 페이지 (사진 업로드, AI 캡션, 갤러리)
+- [ ] 기념일 페이지 (날짜 등록, 알림 설정)
+- [ ] 프로필 페이지 (배경화면 업로드, 개인 정보)
+
+## Phase 4: PWA
+- [ ] manifest.json 설정
+- [ ] Service Worker 구현 (오프라인 캐싱)
+- [ ] 설치 가능한 PWA 구성
+
+## Phase 5: Tests & Deploy
+- [ ] Vitest 테스트 작성
+- [ ] 체크포인트 저장
+- [ ] 배포 URL 전달

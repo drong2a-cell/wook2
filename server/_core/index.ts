@@ -8,6 +8,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { startAnniversaryScheduler } from "../anniversary-scheduler";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -63,4 +64,6 @@ async function startServer() {
   });
 }
 
-startServer().catch(console.error);
+startServer().then(() => {
+  startAnniversaryScheduler();
+}).catch(console.error);
