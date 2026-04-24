@@ -30,7 +30,7 @@ export default function Pairing() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+    <div className="h-screen bg-background flex flex-col items-center justify-center px-6 overflow-y-auto">
       {/* Decorative */}
       <div className="relative mb-8 h-32 w-full flex items-center justify-center">
         <div className="absolute w-28 h-28 rounded-full bg-secondary/40 top-0 left-8" />
