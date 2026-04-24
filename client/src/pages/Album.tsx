@@ -22,6 +22,7 @@ export default function Album() {
   const [albumTitle, setAlbumTitle] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState<any | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"albums" | "shared">("albums");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: albums, refetch: refetchAlbums } = trpc.album.getAlbums.useQuery();
@@ -29,6 +30,8 @@ export default function Album() {
     { albumId: selectedAlbumId! },
     { enabled: !!selectedAlbumId }
   );
+  const { data: allPhotos } = trpc.album.getAllPhotos.useQuery();
+  
   const createAlbum = trpc.album.createAlbum.useMutation({
     onSuccess: () => { refetchAlbums(); setCreateAlbumOpen(false); setAlbumTitle(""); toast.success("앨범이 생성되었습니다!"); },
     onError: (e) => toast.error(e.message),
@@ -64,8 +67,34 @@ export default function Album() {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
+      {/* Tabs */}
+      {!selectedAlbumId && (
+        <div className="px-6 pt-6 pb-2 flex gap-2 border-b border-border/50">
+          <button
+            onClick={() => setActiveTab("albums")}
+            className={`px-4 py-2 rounded-t-xl font-medium text-sm transition-colors ${
+              activeTab === "albums"
+                ? "bg-primary/10 text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            내 앨범
+          </button>
+          <button
+            onClick={() => setActiveTab("shared")}
+            className={`px-4 py-2 rounded-t-xl font-medium text-sm transition-colors ${
+              activeTab === "shared"
+                ? "bg-primary/10 text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            공유 갤러리
+          </button>
+        </div>
+      )}
+
       {/* Header */}
-      <div className="px-6 pt-12 pb-4 flex items-center justify-between">
+      <div className="px-6 pt-6 pb-4 flex items-center justify-between">
         {selectedAlbumId ? (
           <>
             <div className="flex items-center gap-2">
@@ -96,19 +125,23 @@ export default function Album() {
         ) : (
           <>
             <div>
-              <h1 className="text-xl font-bold">추억 앨범</h1>
-              <p className="text-xs text-muted-foreground">AI가 감성 캡션을 자동 작성해요 ✨</p>
+              <h1 className="text-xl font-bold">{activeTab === "albums" ? "추억 앨범" : "공유 갤러리"}</h1>
+              <p className="text-xs text-muted-foreground">
+                {activeTab === "albums" ? "AI가 감성 캡션을 자동 작성해요 ✨" : "함께 만드는 추억들"}
+              </p>
             </div>
-            <Button onClick={() => setCreateAlbumOpen(true)} size="sm" className="rounded-xl gap-1.5">
-              <Plus size={14} />
-              앨범 만들기
-            </Button>
+            {activeTab === "albums" && (
+              <Button onClick={() => setCreateAlbumOpen(true)} size="sm" className="rounded-xl gap-1.5">
+                <Plus size={14} />
+                앨범 만들기
+              </Button>
+            )}
           </>
         )}
       </div>
 
       {/* Album List */}
-      {!selectedAlbumId && (
+      {!selectedAlbumId && activeTab === "albums" && (
         <div className="px-6">
           {!albums?.length ? (
             <div className="text-center py-16 text-muted-foreground">
@@ -144,6 +177,31 @@ export default function Album() {
         </div>
       )}
 
+      {/* Shared Gallery */}
+      {!selectedAlbumId && activeTab === "shared" && (
+        <div className="px-4">
+          {!allPhotos?.length ? (
+            <div className="text-center py-16 text-muted-foreground">
+              <Image size={40} className="mx-auto mb-3 opacity-30" />
+              <p className="text-sm">아직 공유 사진이 없어요</p>
+              <p className="text-xs mt-1">앨범에 사진을 추가하면 여기 나타나요</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-1.5 py-4">
+              {allPhotos.map((photo) => (
+                <button
+                  key={photo.id}
+                  onClick={() => setSelectedPhoto(photo)}
+                  className="aspect-square rounded-xl overflow-hidden bg-muted active:scale-95 transition-transform"
+                >
+                  <img src={photo.imageUrl} alt="" className="w-full h-full object-cover" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Photo Grid */}
       {selectedAlbumId && (
         <div className="px-4">
@@ -161,7 +219,7 @@ export default function Album() {
                   onClick={() => setSelectedPhoto(photo)}
                   className="aspect-square rounded-xl overflow-hidden bg-muted active:scale-95 transition-transform"
                 >
-                  <img src={photo.imageUrl} alt="" className="w-full h-full object-cover" />
+                  <img src={photo.imageUrl} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </button>
               ))}
             </div>
@@ -201,7 +259,7 @@ export default function Album() {
         <DialogContent className="rounded-3xl max-w-sm mx-auto p-0 overflow-hidden">
           {selectedPhoto && (
             <>
-              <img src={selectedPhoto.imageUrl} alt="" className="w-full object-cover max-h-80" />
+              <img src={selectedPhoto.imageUrl} alt="" className="w-full object-cover max-h-80" loading="lazy" />
               <div className="p-4 space-y-2">
                 {selectedPhoto.aiCaption && (
                   <div className="flex gap-2 items-start">
