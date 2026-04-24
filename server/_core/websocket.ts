@@ -1,6 +1,6 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import type { Server as HTTPServer } from "http";
-import { getDb } from "../db";
+import { sendChatMessage, markMessagesRead } from "../db";
 import { eq } from "drizzle-orm";
 import { users, chatMessages } from "../../drizzle/schema";
 
@@ -46,26 +46,24 @@ export function setupWebSocket(httpServer: HTTPServer) {
       }
 
       try {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-
-        // DB에 메시지 저장
-        const result = await db.insert(chatMessages).values({
+        // DB에 메시지 저장 (db.ts 헬퍼 사용)
+        const result = await sendChatMessage({
           pairId: socketUser.pairId,
           senderId: socketUser.userId,
           content: data.content,
           imageUrl: data.imageUrl,
-          createdAt: new Date(),
         });
 
-        // 페어 전체에 메시지 브로드캐스트
+        if (!result) throw new Error("Failed to save message");
+
+        // 페어 전체에 메시지 브로드캐스트 (실제 DB ID 사용)
         io.to(`pair:${socketUser.pairId}`).emit("message", {
-          id: Date.now(),
+          id: result.id,
           senderId: socketUser.userId,
           content: data.content,
           imageUrl: data.imageUrl,
           createdAt: new Date().toISOString(),
-          isRead: false,
+          readAt: null,
         });
       } catch (error) {
         console.error("[WebSocket] Failed to save message:", error);
@@ -79,6 +77,9 @@ export function setupWebSocket(httpServer: HTTPServer) {
       if (!socketUser) return;
 
       try {
+        // DB에 읽음 처리 (db.ts 헬퍼 사용)
+        await markMessagesRead(socketUser.pairId, socketUser.userId);
+        
         // 상대방에게 읽음 알림
         socket.to(`pair:${socketUser.pairId}`).emit("messages-read", {
           messageIds: data.messageIds,

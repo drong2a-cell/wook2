@@ -46,7 +46,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
             <div className="absolute w-40 h-40 rounded-full bg-pink-200/40 blur-3xl -top-4 -left-8 animate-pulse" />
             <div className="absolute w-32 h-32 rounded-full bg-purple-200/30 blur-3xl -bottom-4 -right-8 animate-pulse" />
             <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663593499995/MYgf7aAUaRdMt38uh3hMxS/couple-icon-9EVTtve26aaMFpG9ie7ffd.webp"
+              src="/manus-storage/couple-icon_19778bab.png"
               alt="우리만의 공간"
               className="relative w-40 h-40 object-contain drop-shadow-lg"
             />

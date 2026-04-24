@@ -85,7 +85,7 @@ export default function ChatPopup() {
       createdAt: new Date(),
     };
 
-    socketRef.current.emit("message", {
+    socketRef.current.emit("send-message", {
       pairId: pairData.pair.id,
       content: input,
     });
